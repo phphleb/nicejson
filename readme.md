@@ -3,6 +3,14 @@ NICEJSON
 
 ###  Convert json to readable form
 ###   Преобразование json-строки в читаемый вид
+
+ Install using Composer:
+ ```bash
+ $ composer require phphleb/nicejson
+ ```
+-----------------------------------------
+
+Convert
  ```json
 {"example":["first","second"]}
  ```
@@ -26,6 +34,7 @@ or
 $data = ["example"=>["first","second"]]; // array
 file_put_contents('/path/to/result/json/file/', (new \Phphleb\Nicejson\JsonConverter($data))->get());
  ```
+or
 
  ```php
 $data = (object) ["example"=>["first","second"]]; // object
