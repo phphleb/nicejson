@@ -1,5 +1,5 @@
 {
-    "name": "phphleb/jsonview",
+    "name": "phphleb/nicejson",
     "description": "Convert json to readable form",
     "type": "library",
     "license": "MIT",
@@ -14,11 +14,11 @@
     },
     "autoload": {
         "psr-4": {
-            "Phphleb\\Jsonview\\": "/"
+            "Phphleb\\Nicejson\\": "/"
         }
     },
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=5.4.0"
     },
     "minimum-stability": "dev"
 }
