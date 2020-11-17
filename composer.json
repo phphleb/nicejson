@@ -1,0 +1,24 @@
+{
+    "name": "phphleb/jsonview",
+    "description": "Convert json to readable form",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Foma Tuturov",
+            "email": "fomiash@yandex.ru"
+        }
+    ],
+    "config": {
+        "optimize-autoloader": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Phphleb\\Jsonview\\": "/"
+        }
+    },
+    "require": {
+        "php": ">=5.4.0",
+    },
+    "minimum-stability": "dev"
+}
