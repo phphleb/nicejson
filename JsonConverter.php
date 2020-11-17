@@ -24,29 +24,45 @@ namespace Phphleb\Nicejson;
 
 class JsonConverter
 {
-    private $json;
+    private $data;
 
     private $mode;
 
+    private $depth;
+
     /**
-     * @param string|object|array $resource
+     * @param string|object|array $data
      * @param int $mode
+     * @param int $depth
      */
-    public function __construct($resource, $mode = 0) {
-        $this->json = is_string($resource) ? json_decode($resource) : $resource;
+    public function __construct($data, $mode = 0, $depth = 0) {
+        if (is_string($data)) {
+            $this->data = json_decode($data);
+        } else if (!is_resource($data)) {
+            $this->data = $data;
+        }
         $this->mode = $mode;
+        $this->depth = $depth;
     }
 
     /**
      * @return false|string
      */
     public function get() {
-        return $this->toReadingStrings($this->json);
+        return $this->data !== false && $this->data !== null ? $this->getConvertedData($this->data) : false;
     }
 
-    private function toReadingStrings($data) {
+    /**
+     * @param array|object $data
+     * @return false|string
+     */
+    private function getConvertedData($data) {
         ob_start();
-        echo json_encode($data, $this->mode | JSON_PRETTY_PRINT);
+        if ($this->depth) {
+            echo json_encode($data, $this->mode | JSON_PRETTY_PRINT, $this->depth);
+        } else {
+            echo json_encode($data, $this->mode | JSON_PRETTY_PRINT);
+        }
         $result = ob_get_contents();
         ob_end_clean();
         return $result;
