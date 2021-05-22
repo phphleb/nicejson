@@ -84,7 +84,7 @@ class JsonConverter
      * @return string
      */
     private function createHyphenation($str) {
-        return str_replace("\n", $this->hyphenation, $str);
+        return str_replace(["\r\n", "\r", "\n"], $this->hyphenation, $str);
     }
 }
 
