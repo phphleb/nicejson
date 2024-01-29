@@ -1,90 +1,95 @@
 <?php
-
 /**
  * @author  Foma Tuturov <fomiash@yandex.ru>
- *
- * Convert json to readable form.
- * Преобразование json-строки в читаемый вид.
  */
 
+declare(strict_types=1);
+
 /*
-convert
+
+Converting a json string to a readable form (spaces are shown with dots):
+
+Преобразование json-строки в читаемый вид (пробелы показаны точками):
+
 '{"example":["first","second"]}'
+
 to
-'{
-    "example": [
-        "first",
-        "second"
-    ]
+
+'{\n
+...."example":.[\n
+........"first",\n
+........"second"\n
+....]\n
 }'
+
  */
 
 namespace Phphleb\Nicejson;
 
-
-class JsonConverter
+/**
+ * Converts to formatted JSON,
+ * not a single line (as the json_encode() function does).
+ *
+ * Преобразует в форматированный JSON,
+ * а не одной строкой (как это делает функция json_encode()).
+ */
+final readonly class JsonConverter
 {
-    private $data;
-
-    private $mode;
-
-    private $depth;
-
-    private $hyphenation;
+    /**
+     * @param int $mode - conversion flag (second parameter of json_encode() function).
+     *                  - флаг преобразования (второй параметр функции json_encode()).
+     *
+     * @param int $depth - maximum nesting (the third parameter of the json_encode() function).
+     *                   - максимум вложенности (третий параметр функции json_encode()).
+     *
+     * @param null|string $hyphenation - substitution of own value in places of line breaks.
+     *                                 - подстановка собственного значения в места переноса строк.
+     */
+    public function __construct(
+        private int     $mode = 0,
+        private int     $depth = 0,
+        private ?string $hyphenation = null
+    )
+    {
+    }
 
     /**
-     * @param string|object|array $data
-     * @param int $mode
-     * @param int $depth
-     * @param string $hyphenation
+     * Getting the result of the transformation.
+     *
+     * Получение результата преобразования.
+     *
+     * @param string|object|array $data - data to be converted, it can be an object, an array,
+     *                                    or a valid JSON string.
+     *                                  - данные для преобразования, это может быть объект, массив
+     *                                    или валидная JSON-строка.
      */
-    public function __construct($data, $mode = 0, $depth = 0, $hyphenation = null)
+    public function get(array|object|string $data): false|string
     {
-        if (is_string($data)) {
-            $this->data = json_decode($data);
-        } else if (!is_resource($data)) {
-            $this->data = $data;
+        if (\is_string($data)) {
+            $data = \json_decode($data);
         }
-        $this->mode = $mode;
-        $this->depth = $depth;
-        $this->hyphenation = $hyphenation;
+        return $data !== false && $data !== null ? $this->getConvertedData($data) : false;
     }
 
-    /**
-     * @return false|string
-     */
-    public function get()
+    private function getConvertedData(array|object $data): false|string
     {
-        return $this->data !== false && $this->data !== null ? $this->getConvertedData($this->data) : false;
-    }
-
-    /**
-     * @param array|object $data
-     * @return false|string
-     */
-    private function getConvertedData($data)
-    {
-        ob_start();
+        \ob_start();
         if ($this->depth) {
-            echo json_encode($data, $this->mode | JSON_PRETTY_PRINT, $this->depth);
+            echo \json_encode($data, $this->mode | JSON_PRETTY_PRINT, $this->depth);
         } else {
-            echo json_encode($data, $this->mode | JSON_PRETTY_PRINT);
+            echo \json_encode($data, $this->mode | JSON_PRETTY_PRINT);
         }
-        $result = ob_get_contents();
-        ob_end_clean();
+        $result = (string)\ob_get_clean();
 
-        if(!is_null($this->hyphenation)){
+        if ($this->hyphenation !== null) {
             $result = $this->createHyphenation($result);
         }
         return $result;
     }
 
-    /**
-     * @param $str
-     * @return string
-     */
-    private function createHyphenation($str) {
-        return str_replace(["\r\n", "\r", "\n"], $this->hyphenation, $str);
+    private function createHyphenation(string $str): string
+    {
+        return \str_replace(["\r\n", "\r", "\n"], $this->hyphenation, $str);
     }
 }
 

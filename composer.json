@@ -9,16 +9,13 @@
             "email": "fomiash@yandex.ru"
         }
     ],
-    "config": {
-        "optimize-autoloader": true
-    },
     "autoload": {
         "psr-4": {
             "Phphleb\\Nicejson\\": "/"
         }
     },
     "require": {
-        "php": ">=5.4.0",
+        "php": ">=8.2.0",
         "ext-json": "*"
     },
     "minimum-stability": "dev"
